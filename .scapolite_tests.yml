@@ -1,0 +1,138 @@
+os_family: unix
+os_image: Debian
+os_image_version: v12
+ciscat_version: v4.49.0
+testruns:
+- name: L2_Server_CIS_Debian12_Ansible
+  testrun_ciscat_profile: xccdf_org.cisecurity.benchmarks_profile_Level_2_-_Server
+  testrun_benchmark_filename: CIS_Debian_Linux_12_Benchmark_v1.1.0-xccdf.xml
+  testrun_checklist_id: "xccdf_org.cisecurity.benchmarks_benchmark_1.1.0_CIS_Debian_Linux_12_Benchmark"
+  testrun_ansible_vars:
+    deb12cis_sshd_allow_users: "admin"
+    deb12cis_sshd_allow_groups: "sshadmins"
+  testrun_ansible_tags:
+  - level2-server
+  - level1-server
+  testrun_skip_ansible_tags:
+  activities:
+  # - id: 20_Ansible_Role_InitialCheck_L2_Workstation
+  #   type: ansible
+  #   role_name: DEBIAN12-CIS # code.siemens.com
+  #   ansible:
+  #     check_mode: yes
+  - id: 21_initial_ciscat_check
+    type: ciscat
+    validations:
+    - sub_type: count
+      expected:
+        pass: 131
+        fail: 123
+        error: 0
+        unknown: 0
+        not selected: 25
+  - id: 22_Ansible_Role_Implement_L2_Workstation
+    type: ansible
+    role_name: "DEBIAN12-CIS"
+    before_script: |
+      /sbin/groupadd sshadmins
+      /sbin/usermod -a -G sshadmins admin
+  - id: 23_ciscat_check_after_implement
+    type: ciscat
+    validations:
+    - sub_type: count
+      expected:
+        pass: 227
+        fail: 26
+        error: 0
+        unknown: 0
+        not selected: 26
+  - id: 25_reboot_system_for_testing_consistency
+    type: reboot
+    args:
+    - msg: "Reboot performed as requested on testfiles used for running ANSIBLE_CIS_DEBIAN_10 pipeline(L2)"
+    - test_command: "uptime -s"
+    - reboot_timeout: 100
+  # - id: 24_Ansible_Role_CheckAfterImplement_L1_Workstation
+  #   type: ansible
+  #   role_name: "ubuntu22-cis"
+  #   before_script: |
+  #     cat /etc/os-release
+  #   ansible:
+  #     check_mode: yes
+  #     diff: yes
+  - id: 26_ciscat_check_after_impl_AND_reboot
+    type: ciscat
+    validations:
+    - sub_type: count
+      expected:
+        pass: 227
+        fail: 26
+        error: 0
+        unknown: 0
+        not selected: 26
+
+- name: L1_Server_CIS_Debian12_Ansible
+  testrun_ciscat_profile: xccdf_org.cisecurity.benchmarks_profile_Level_1_-_Server
+  testrun_benchmark_filename: CIS_Debian_Linux_12_Benchmark_v1.1.0-xccdf.xml
+  testrun_checklist_id: "xccdf_org.cisecurity.benchmarks_benchmark_1.1.0_CIS_Debian_Linux_12_Benchmark"
+  testrun_ansible_vars:
+  testrun_ansible_vars:
+    deb12cis_sshd_allow_users: "admin"
+    deb12cis_sshd_allow_groups: "sshadmins"
+  testrun_ansible_tags:
+  - level1-server
+  activities:
+  # - id: 10_Ansible_Role_InitialCheck_L1_Workstation
+  #   type: ansible
+  #   role_name: ubuntu22-cis # code.siemens.com
+  #   ansible:
+  #     check_mode: yes
+  - id: 11_initial_ciscat_check
+    type: ciscat
+    validations:
+    - sub_type: count
+      expected:
+        pass: 123
+        fail: 78
+        error: 0
+        unknown: 0
+        not selected: 78
+  - id: 12_Ansible_Role_Implement_L1_Workstation
+    type: ansible
+    role_name: "DEBIAN12-CIS" # code.siemens.com
+    before_script: |
+      /sbin/groupadd sshadmins
+      /sbin/usermod -a -G sshadmins admin
+  - id: 13_ciscat_check_after_implement
+    type: ciscat
+    validations:
+    - sub_type: count
+      expected:
+        pass: 181
+        fail: 20
+        error: 0
+        unknown: 0
+        not selected: 78
+  - id: 15_reboot_system_for_testing_consistency
+    type: reboot
+    args:
+    - msg: Reboot performed as requested on testfiles used for running ANSIBLE_CIS_DEBIAN_10 pipeline(L1)
+    - reboot_timeout: 100
+    # - id: 14_Ansible_Role_CheckAfterImplement_L1_Workstation
+  #   type: ansible
+  #   role_name: ubuntu22-cis # code.siemens.com
+  #   before_script: |
+  #     cat /etc/os-release
+  #   ansible:
+  #     check_mode: yes
+  #     diff: yes
+  - id: 16_ciscat_check_after_impl_AND_reboot
+    type: ciscat
+    validations:
+    - sub_type: count
+      expected:
+        pass: 181
+        fail: 20
+        error: 0
+        unknown: 0
+        not selected: 78
