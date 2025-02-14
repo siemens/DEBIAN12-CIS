@@ -707,7 +707,7 @@ deb12cis_bluetooth_mask: false
 
 ## 3.1 IPv6 requirement toggle
 # This variable governs whether ipv6 is enabled or disabled.
-deb12cis_ipv6_required: true
+deb12cis_ipv6_required: false
 
 ## 3.1.2 wireless network requirements
 # 3.3 System network parameters (host only OR host and router)
