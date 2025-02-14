@@ -544,7 +544,7 @@ control_1_3_1_4_was_run: false
 ## Control 1.4.1
 
 ## Whether to set boot password or not
-deb12cis_set_boot_pass: false
+deb12cis_set_boot_pass: true
 
 # This variable will store the hashed GRUB bootloader password to be stored in '/boot/grub2/user.cfg' file. The default value
 # must be changed to a value that may be generated with this command 'grub2-mkpasswd-pbkdf2' and must comply with
