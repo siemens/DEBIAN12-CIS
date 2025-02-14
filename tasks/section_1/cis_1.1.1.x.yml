@@ -169,7 +169,7 @@
         name: jffs2
         state: absent
 
-- name: "1.1.1.6 | PATCH | Ensure squashfs kernel module is not available"
+- name: "1.1.1.6 | PATCH | Ensure overlayfs kernel module is not available"
   when:
     - deb12cis_rule_1_1_1_6
   tags:
@@ -180,30 +180,30 @@
     - squashfs
     - NIST800-53R5_CM-7
   block:
-    - name: "1.1.1.6 | PATCH | Ensure squashfs kernel module is not available | Edit modprobe config"
+    - name: "1.1.1.6 | PATCH | Ensure overlayfs kernel module is not available | Edit modprobe config"
       ansible.builtin.lineinfile:
         path: /etc/modprobe.d/CIS.conf
-        regexp: "^(#)?install squashfs(\\s|$)"
-        line: "install squashfs /bin/true"
+        regexp: "^(#)?install overlay(\\s|$)"
+        line: "install overlay /bin/false"
         create: true
         mode: 'u-x,go-rwx'
 
-    - name: "1.1.1.6 | PATCH | Ensure squashfs kernel module is not available | blacklist"
+    - name: "1.1.1.6 | PATCH | Ensure overlayfs kernel module is not available | blacklist"
       ansible.builtin.lineinfile:
         path: /etc/modprobe.d/blacklist.conf
-        regexp: "^(#)?blacklist squashfs(\\s|$)"
-        line: "blacklist squashfs"
+        regexp: "^(#)?blacklist overlay(\\s|$)"
+        line: "blacklist overlay"
         create: true
         mode: 'u-x,go-rwx'
 
-    - name: "1.1.1.6 | PATCH | Ensure squashfs kernel module is not available | Disable squashfs"
+    - name: "1.1.1.6 | PATCH | Ensure overlayfs kernel module is not available | Disable overlayfs"
       when:
         - not system_is_container
       community.general.modprobe:
-        name: squashfs
+        name: overlayfs
         state: absent
 
-- name: "1.1.1.7 | PATCH | Ensure udf kernel module is not available"
+- name: "1.1.1.7 | PATCH | Ensure squashfs kernel module is not available"
   when:
     - deb12cis_rule_1_1_1_7
   tags:
@@ -211,10 +211,44 @@
     - level2-workstation
     - patch
     - rule_1.1.1.7
+    - squashfs
+    - NIST800-53R5_CM-7
+  block:
+    - name: "1.1.1.7 | PATCH | Ensure squashfs kernel module is not available | Edit modprobe config"
+      ansible.builtin.lineinfile:
+        path: /etc/modprobe.d/CIS.conf
+        regexp: "^(#)?install squashfs(\\s|$)"
+        line: "install squashfs /bin/true"
+        create: true
+        mode: 'u-x,go-rwx'
+
+    - name: "1.1.1.7 | PATCH | Ensure squashfs kernel module is not available | blacklist"
+      ansible.builtin.lineinfile:
+        path: /etc/modprobe.d/blacklist.conf
+        regexp: "^(#)?blacklist squashfs(\\s|$)"
+        line: "blacklist squashfs"
+        create: true
+        mode: 'u-x,go-rwx'
+
+    - name: "1.1.1.7 | PATCH | Ensure squashfs kernel module is not available | Disable squashfs"
+      when:
+        - not system_is_container
+      community.general.modprobe:
+        name: squashfs
+        state: absent
+
+- name: "1.1.1.8 | PATCH | Ensure udf kernel module is not available"
+  when:
+    - deb12cis_rule_1_1_1_8
+  tags:
+    - level2-server
+    - level2-workstation
+    - patch
+    - rule_1.1.1.8
     - udf
     - NIST800-53R5_CM-7
   block:
-    - name: "1.1.1.7 | PATCH | Ensure udf kernel module is not available | Edit modprobe config"
+    - name: "1.1.1.8 | PATCH | Ensure udf kernel module is not available | Edit modprobe config"
       ansible.builtin.lineinfile:
         path: /etc/modprobe.d/CIS.conf
         regexp: "^(#)?install udf(\\s|$)"
@@ -222,7 +256,7 @@
         create: true
         mode: 'u-x,go-rwx'
 
-    - name: "1.1.1.7 | PATCH | Ensure udf kernel module is not available | blacklist"
+    - name: "1.1.1.8 | PATCH | Ensure udf kernel module is not available | blacklist"
       ansible.builtin.lineinfile:
         path: /etc/modprobe.d/blacklist.conf
         regexp: "^(#)?blacklist udf(\\s|$)"
@@ -230,30 +264,30 @@
         create: true
         mode: 'u-x,go-rwx'
 
-    - name: "1.1.1.7 | PATCH | Ensure udf kernel module is not available | Disable udf"
+    - name: "1.1.1.8 | PATCH | Ensure udf kernel module is not available | Disable udf"
       when:
         - not system_is_container
       community.general.modprobe:
         name: udf
         state: absent
 
-- name: "1.1.1.8 | PATCH | Ensure usb-storage kernel module is not available"
+- name: "1.1.1.9 | PATCH | Ensure usb-storage kernel module is not available"
   when:
-    - deb12cis_rule_1_1_1_8
+    - deb12cis_rule_1_1_1_9
   tags:
     - level1-server
     - level2-workstation
     - patch
-    - rule_1.1.1.8
+    - rule_1.1.1.9
     - usb
     - NIST800-53R5_CM-7
   vars:
-    warn_control_id: '1.1.1.8'
+    warn_control_id: '1.1.1.9'
   block:
     - name: "PATCH | Ensure usb-storage kernel module is not available | UAS is not running"
       when: discovered_uas_status.rc != 0
       block:
-        - name: "1.1.1.8 | PATCH | Ensure usb-storage kernel module is not available | Edit modprobe config"
+        - name: "1.1.1.9 | PATCH | Ensure usb-storage kernel module is not available | Edit modprobe config"
           ansible.builtin.lineinfile:
             path: /etc/modprobe.d/CIS.conf
             regexp: "^(#)?install usb-storage(\\s|$)"
@@ -261,7 +295,7 @@
             create: true
             mode: 'u-x,go-rwx'
 
-        - name: "1.1.1.8 | PATCH | Ensure usb-storage kernel module is not available | blacklist"
+        - name: "1.1.1.9 | PATCH | Ensure usb-storage kernel module is not available | blacklist"
           ansible.builtin.lineinfile:
             path: /etc/modprobe.d/blacklist.conf
             regexp: "^(#)?blacklist usb-storage(\\s|$)"
@@ -269,13 +303,13 @@
             create: true
             mode: 'u-x,go-rwx'
 
-        - name: "1.1.1.8 | PATCH | Ensure usb-storage kernel module is not available | Disable usb-storage"
+        - name: "1.1.1.9 | PATCH | Ensure usb-storage kernel module is not available | Disable usb-storage"
           when: not system_is_container
           community.general.modprobe:
             name: usb-storage
             state: absent
 
-    - name: "1.1.1.8 | AUDIT | Ensure usb-storage kernel module is not available | Warning if UAS is still running"
+    - name: "1.1.1.9 | AUDIT | Ensure usb-storage kernel module is not available | Warning if UAS is still running"
       when: discovered_uas_status.rc == 0
       ansible.builtin.debug:
         msg:
@@ -286,7 +320,7 @@
           - "Please review your setting for variable debian11cis_uas_remove and make sure it is set to true."
           - "And rerun the Ansible playbook to properly remove usb_storage."
 
-    - name: "1.1.1.8 | WARN | Ensure usb-storage kernel module is not available | Increment Warning Count"
+    - name: "1.1.1.9 | WARN | Ensure usb-storage kernel module is not available | Increment Warning Count"
       when: discovered_uas_status.rc == 0
       ansible.builtin.import_tasks:
         file: warning_facts.yml
