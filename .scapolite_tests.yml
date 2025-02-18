@@ -76,7 +76,6 @@ testruns:
   testrun_benchmark_filename: CIS_Debian_Linux_12_Benchmark_v1.1.0-xccdf.xml
   testrun_checklist_id: "xccdf_org.cisecurity.benchmarks_benchmark_1.1.0_CIS_Debian_Linux_12_Benchmark"
   testrun_ansible_vars:
-  testrun_ansible_vars:
     deb12cis_sshd_allow_users: "admin"
     deb12cis_sshd_allow_groups: "sshadmins"
   testrun_ansible_tags:
