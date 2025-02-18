@@ -1344,4 +1344,4 @@ deb12cis_no_world_write_adjust: true
 # This variable is a toggle foe enabling/disabling the automated modification of
 # permissions on dot files.
 # Possible values are `true` and `false`.
-deb12cis_dotperm_ansiblemanaged: false
+deb12cis_dotperm_ansiblemanaged: true
