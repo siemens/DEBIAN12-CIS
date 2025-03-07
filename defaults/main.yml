@@ -126,6 +126,7 @@ deb12cis_rule_1_1_1_5: true
 deb12cis_rule_1_1_1_6: true
 deb12cis_rule_1_1_1_7: true
 deb12cis_rule_1_1_1_8: true
+deb12cis_rule_1_1_1_9: true
 
 # Filesystems
 # /tmp
