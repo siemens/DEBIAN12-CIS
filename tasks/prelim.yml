@@ -201,8 +201,8 @@
 - name: "PRELIM | PATCH | Create journald config directory"
   when:
     - deb12cis_syslog == 'journald'
-    - deb12cis_rule_6_2_1_1_3 or
-      deb12cis_rule_6_2_1_1_4
+    - deb12cis_rule_6_1_1_3 or
+      deb12cis_rule_6_1_2_2
   tags: always
   ansible.builtin.file:
     path: /etc/systemd/journald.conf.d
@@ -213,12 +213,12 @@
 - name: "PRELIM | PATCH | Configure System Accounting (auditd)"
   when:
     - '"auditd" not in ansible_facts.packages'
-    - deb12cis_rule_6_3_1_1
+    - deb12cis_rule_6_2_1_1
   tags:
     - level2-server
     - level2-workstation
     - patch
-    - rule_6.3.1.1
+    - rule_6.2.1.1
     - auditd
   ansible.builtin.package:
     name: auditd
@@ -227,10 +227,10 @@
 
 - name: "PRELIM | AUDIT | Discover audit logfile"
   when:
-    - deb12cis_rule_6_3_4_1 or
-      deb12cis_rule_6_3_4_2 or
-      deb12cis_rule_6_3_4_3 or
-      deb12cis_rule_6_3_4_4
+    - deb12cis_rule_6_2_4_1 or
+      deb12cis_rule_6_2_4_2 or
+      deb12cis_rule_6_2_4_3 or
+      deb12cis_rule_6_2_4_4
   tags: always
   ansible.builtin.shell: grep ^log_file /etc/audit/auditd.conf | awk '{ print $NF }'
   changed_when: false
@@ -238,17 +238,17 @@
 
 - name: "PRELIM | AUDIT | Audit conf and rules files | list files"
   when:
-    - deb12cis_rule_6_3_4_5 or
-      deb12cis_rule_6_3_4_6 or
-      deb12cis_rule_6_3_4_7
+    - deb12cis_rule_6_2_4_5 or
+      deb12cis_rule_6_2_4_6 or
+      deb12cis_rule_6_2_4_7
   tags:
     - level2-server
     - level2-workstation
     - patch
     - auditd
-    - rule_6.3.4.5
-    - rule_6.3.4.6
-    - rule_6.3.4.7
+    - rule_6.2.4.5
+    - rule_6.2.4.6
+    - rule_6.2.4.7
   ansible.builtin.find:
     path: /etc/audit
     file_type: file
@@ -283,7 +283,7 @@
 
 - name: "Optional | PATCH | Check for UAS running for usb-storage"
   when:
-    - deb12cis_rule_1_1_1_8
+    - deb12cis_rule_1_1_1_9
   tags:
     - level1-server
     - level2-workstation
