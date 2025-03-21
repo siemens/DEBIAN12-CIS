@@ -9,6 +9,11 @@
   ansible.builtin.import_tasks:
     file: cis_6.1.2.1.x.yml
 
+- name: "SECTION | 6.1.2.x | Configure journald"
+  when: deb12cis_syslog == 'journald'
+  ansible.builtin.import_tasks:
+    file: cis_6.1.2.x.yml
+
 - name: "SECTION | 6.1.4 | Configure Logfiles"
   ansible.builtin.import_tasks:
     file: cis_6.1.4.x.yml
