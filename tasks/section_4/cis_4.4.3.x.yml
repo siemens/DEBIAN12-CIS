@@ -4,7 +4,7 @@
   when: deb12cis_rule_4_4_3_1
   tags:
     - level1-server
-    - level1-workstationå
+    - level1-workstation
     - patch
     - rule_4.4.3.1
     - ip6tables
