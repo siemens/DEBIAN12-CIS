@@ -34,7 +34,7 @@ deb12cis_level_2: true
 ## Benchmark name and profiles used by auditing control role
 # The audit variable found at the base
 benchmark: DEBIAN12-CIS
-benchmark_version: '1.0.1'
+benchmark_version: '1.1.0'
 
 ## Reboot system before audit
 # System will reboot if false, can give better audit results
@@ -121,6 +121,7 @@ deb12cis_rule_1_1_1_2: true
 deb12cis_rule_1_1_1_3: true
 deb12cis_rule_1_1_1_4: true
 deb12cis_rule_1_1_1_5: true
+deb12cis_rule_1_1_1_6: true
 deb12cis_rule_1_1_1_7: true
 deb12cis_rule_1_1_1_8: true
 deb12cis_rule_1_1_1_9: true
@@ -258,8 +259,9 @@ deb12cis_rule_2_4_1_8: true
 # Configure At
 deb12cis_rule_2_4_2_1: true
 
-## Section 3 Network Configuration
-# Network Devices
+## Section 3 Fixes
+# Section 3 is Network Configuration (Configure network devices, Configure network kernel modules,
+# Configure network kernel parameters)
 deb12cis_rule_3_1_1: true
 deb12cis_rule_3_1_2: true
 deb12cis_rule_3_1_3: true
@@ -282,8 +284,8 @@ deb12cis_rule_3_3_10: true
 deb12cis_rule_3_3_11: true
 
 ## Section 4 Fixes
-# Section 4 is Firewall configuration (Configure single firewall utility, Configure Uncomplicated Firewall, Configure nftables
-# and Configure iptables)
+# Section 4 is Firewall configuration (Configure single firewall utility, Configure Uncomplicated Firewall,
+# Configure nftables and Configure iptables)
 # Configure UncomplicatedFirewall
 deb12cis_rule_4_2_1: true
 deb12cis_rule_4_2_2: true
@@ -799,7 +801,7 @@ deb12cis_flush_ipv6_route: false
 ## Section 4 Control Variables
 ##
 
-## Controls 4.1.x, 4.2.x, and 4.3.x - Firewall configuration
+## Controls 4.2.x, and 4.3.x - Firewall configuration
 # This variable represents the toggle for which firewall package is used.
 # The options that have an effect on the system are `ufw` and `iptables`.
 # The option `nftables` is also possible, but will only result in a message,
@@ -1259,6 +1261,149 @@ deb12cis_bash_umask: '027'
 ## Section 6 Control Variables
 ##
 
+## Control 6.1.1.3 Ensure journald log file rotation is configured
+# These variable specifies how much disk space the journal may use up at most
+# Specify values in bytes or use K, M, G, T, P, E as units for the specified sizes.
+# See https://www.freedesktop.org/software/systemd/man/journald.conf.html for more information.
+deb12cis_journald_systemmaxuse: 10M
+# This variable determines disk to be kept free by `journald`.
+# Specify values in bytes or use K, M, G, T, P, E as units for the specified size.
+deb12cis_journald_systemkeepfree: 100G
+# This variable configures how much disk space the journal may use up at most.
+# Similar with 'deb12cis_journald_systemmaxuse', but related to runtime space.
+# Specify values in bytes or use K, M, G, T, P, E as units for the specified size.
+deb12cis_journald_runtimemaxuse: 10M
+# This variable configures the actual amount of disk space to keep free
+# Similar with 'deb12cis_journald_systemkeepfree', but related to runtime space.
+# Specify values in bytes or use K, M, G, T, P, E as units for the specified size.
+deb12cis_journald_runtimekeepfree: 100G
+# Current variable governs the settings for log retention(how long the log files will be kept).
+# Thus, it specifies the maximum time to store entries in a single journal
+# file before rotating to the next one. Set to 0 to turn off this feature.
+# The given values is interpreted as seconds, unless suffixed with the units
+# `year`, `month`, `week`, `day`, `h` or `m` to override the default time unit of seconds.
+# Values are Xm, Xh, Xday, Xweek, Xmonth, Xyear, for example 2week is two weeks
+deb12cis_journald_maxfilesec: 1month
+
+## Control 6.1.2.1.x | systemd-journal-remote
+## Control 6.1.3.x | Configure rsyslog
+# This variable governs which logging service should be used, choosing between 'rsyslog'(CIS recommendation)
+# or 'journald'(only one that is implemented) will trigger the execution of the associated subsection, as the-best
+# practices are written wholly independent of each other.
+deb12cis_syslog: journald
+
+## Control  6.1.2.1.2 - Ensure systemd-journal-upload authentication is configured
+# 'deb12cis_journal_upload_url' is the ip address to upload the journal entries to
+#  URL value may specify either just the hostname or both the protocol and hostname. 'https' is the default. The port
+#  number may be specified after a colon (":"), otherwise 19532 will be used by default.
+deb12cis_journal_upload_url: 192.168.50.42
+
+## Control 6.1.2.1.2 - Ensure systemd-journal-upload authentication is configured
+## The paths below have the default paths/files, but allow user to create custom paths/filenames
+# This variable specifies the path to the private key file used by the remote journal
+# server to authenticate itself to the client. This key is used alongside the server's
+# public certificate to establish secure communication.
+deb12cis_journal_upload_serverkeyfile: "/etc/ssl/private/journal-upload.pem"
+# This variable specifies the path to the public certificate file of the remote journal
+# server. This certificate is used to verify the authenticity of the remote server.
+deb12cis_journal_servercertificatefile: "/etc/ssl/certs/journal-upload.pem"
+# This variable specifies the path to a file containing one or more public certificates
+# of certificate authorities (CAs) that the client trusts. These trusted certificates are used
+# to validate the authenticity of the remote server's certificate.
+deb12cis_journal_trustedcertificatefile: "/etc/ssl/ca/trusted.pem"
+
+## Control 6.1.3.7 - Ensure rsyslog is not configured to receive logs from a remote client
+# This variable expresses whether the system is used as a log server or not. If set to:
+#  - 'false', current system will act as a log CLIENT, thus it should NOT receive data from other hosts.
+#  - 'true', current system will act as a log SERVER, enabling centralised log management(by protecting log integrity
+# from local attacks on remote clients)
+deb12cis_system_is_log_server: false
+
+## Control 6.2.1.4 - Ensure audit_backlog_limit is sufficient
+# This variable represents the audit backlog limit, i.e., the maximum number of audit records that the
+# system can buffer in memory, if the audit subsystem is unable to process them in real-time.
+# Buffering in memory is useful in situations, where the audit system is overwhelmed
+# with incoming audit events, and needs to temporarily store them until they can be processed.
+# This variable should be set to a sufficient value. The CIS baseline recommends at least `8192` as value.
+deb12cis_audit_back_log_limit: 8192
+
+## Controls 6.2.2.x - What to do when log files fill up
+## Control 6.2.2.1 - Ensure audit log storage size is configured
+# This variable specifies the maximum size in MB that an audit log file can reach
+# before it is archived or deleted to make space for the new audit data.
+# This should be set based on your sites policy. CIS does not provide a specific value.
+deb12cis_auditd_max_log_file_size: 10
+
+## Control 6.2.2.2 - Ensure audit logs are not automatically deleted
+# This variable determines what action the audit system should take when the maximum
+# size of a log file is reached.
+# The options for setting this variable are as follows:
+# - `ignore`: the system does nothing when the size of a log file is full;
+# - `syslog`: a message is sent to the system log indicating the problem;
+# - `suspend`: the system suspends recording audit events until the log file is cleared or rotated;
+# - `rotate`: the log file is rotated (archived) and a new empty log file is created;
+# - `keep_logs`: the system attempts to keep as many logs as possible without violating disk space constraints.
+# CIS prescribes the value `keep_logs`.
+deb12cis_auditd_max_log_file_action: keep_logs
+
+## Control 6.2.2.3 - Ensure system is disabled when audit logs are full
+# This variable determines how the system should act in case of issues with the disk.
+# The disk_full_action parameter tells the system what action to take when no free space is
+# available on the partition that holds the audit log files.
+# Valid values are ignore, syslog, rotate, exec, suspend, single, and halt.
+# CIS prescribes
+# disk_full_action parameter:
+# Set to halt - the auditd daemon will shutdown the system when the disk partition containing
+# the audit logs becomes full.
+# Set to single - the auditd daemon will put the computer system in single user mode when the
+# disk partition containing the audit logs becomes full.
+deb12cis_auditd_disk_full_action: halt
+# This variable determines how the system should act in case of issues with the disk.
+# The disk_error_action parameter tells the system what action to take when an error is detected
+# on the partition that holds the audit log files.
+# Valid values are ignore, syslog, exec, suspend, single, and halt.
+# disk_error_action parameter:
+# Set to halt - the auditd daemon will shutdown the system when an error is detected on the
+# partition that holds the audit log files.
+# Set to single - the auditd daemon will put the computer system in single user mode when
+# an error is detected on the partition that holds the audit log files.
+# Set to syslog - the auditd daemon will issue no more than 5 consecutive warnings to syslog
+# when an error is detected on the partition that holds the audit log files.
+deb12cis_auditd_disk_error_action: syslog
+
+# Control 6.2.2.4 - Ensure system warns when audit logs are low on space
+# This variable tells the system what action to take when the system has detected
+# that it is starting to get low on disk space.
+# The options for setting this variable are as follows:
+# "ignore"  - the system does nothing when presented with the aforementioned issue;
+# "syslog" - a message is sent to the system log about disk space running low;
+# "email"  - the system sends an email notification to the email address
+#            specified in the "action_mail_acct" variable;
+# "exec"   - the system executes a custom command when disk space is running
+#            low;
+# "suspend" - the system suspends recording audit events until more space is available;
+# "single"  - the audit daemon will put the computer system in single user mode;
+# "halt"    - the system is halted when disk space is critically low;
+# CIS prescribes either 'email', 'exec', `single` or `halt`.
+deb12cis_auditd_space_left_action: email
+# This variable tells the system what action to take when the system has detected
+# that it is low on disk space.
+# The options for setting this variable are as follows:
+# "ignore"  - the system does nothing when presented with the aforementioned issue;
+# "syslog"  - a message is sent to the system log about disk space running low;
+# "email"  - the system sends an email notification to the email address
+#            specified in the "action_mail_acct" variable;
+# "exec"   - the system executes a custom command when disk space is running
+#            low;
+# "suspend" - the system suspends recording audit events until more space is available;
+# "single"  - the audit daemon will put the computer system in single user mode;
+# "halt"    - the system is halted when disk space is critically low;
+# CIS prescribes either `halt` or `single`.
+deb12cis_auditd_admin_space_left_action: halt
+# This variable governs if the configuration for space_left_action and admin_space_left action
+# should be implemented.
+deb12cis_auditd_extra_conf_usage: false
+
 ## Control 6.3.1 - allow aide to be configured
 # AIDE is a file integrity checking tool, similar in nature to Tripwire.
 # While it cannot prevent intrusions, it can detect unauthorized changes
@@ -1352,150 +1497,6 @@ deb12cis_aide_cron_month: '*'
 # can be concatenated with commas.
 deb12cis_aide_cron_weekday: '*'
 
-## Control 6.2.3 | Configure rsyslog
-## Control 6.2.1 | Configure journald
-# This variable governs which logging service should be used, choosing between 'rsyslog'(CIS recommendation)
-# or 'journald'(only one that is implemented) will trigger the execution of the associated subsection, as the-best
-# practices are written wholly independent of each other.
-deb12cis_syslog: journald
-
-## Control 6.2.2.x & 6.2.3.x - Ensure rsyslog is not configured to receive logs from a remote client
-# This variable expresses whether the system is used as a log server or not. If set to:
-#  - 'false', current system will act as a log CLIENT, thus it should NOT receive data from other hosts.
-#  - 'true', current system will act as a log SERVER, enabling centralised log management(by protecting log integrity
-# from local attacks on remote clients)
-deb12cis_system_is_log_server: false
-
-## Control 6.2.2.1.2 - Ensure systemd-journal-remote is configured
-# 'deb12cis_journal_upload_url' is the ip address to upload the journal entries to
-#  URL value may specify either just the hostname or both the protocol and hostname. 'https' is the default. The port
-#  number may be specified after a colon (":"), otherwise 19532 will be used by default.
-deb12cis_journal_upload_url: 192.168.50.42
-## The paths below have the default paths/files, but allow user to create custom paths/filenames
-
-## Control 6.2.2.1.2 - Ensure systemd-journal-remote is configured
-# This variable specifies the path to the private key file used by the remote journal
-# server to authenticate itself to the client. This key is used alongside the server's
-# public certificate to establish secure communication.
-deb12cis_journal_upload_serverkeyfile: "/etc/ssl/private/journal-upload.pem"
-# This variable specifies the path to the public certificate file of the remote journal
-# server. This certificate is used to verify the authenticity of the remote server.
-deb12cis_journal_servercertificatefile: "/etc/ssl/certs/journal-upload.pem"
-# This variable specifies the path to a file containing one or more public certificates
-# of certificate authorities (CAs) that the client trusts. These trusted certificates are used
-# to validate the authenticity of the remote server's certificate.
-deb12cis_journal_trustedcertificatefile: "/etc/ssl/ca/trusted.pem"
-
-## Control 6.2.1.3 - Ensure journald log rotation is configured per site policy
-# These variable specifies how much disk space the journal may use up at most
-# Specify values in bytes or use K, M, G, T, P, E as units for the specified sizes.
-# See https://www.freedesktop.org/software/systemd/man/journald.conf.html for more information.
-deb12cis_journald_systemmaxuse: 10M
-# This variable determines disk to be kept free by `journald`.
-# Specify values in bytes or use K, M, G, T, P, E as units for the specified size.
-deb12cis_journald_systemkeepfree: 100G
-# This variable configures how much disk space the journal may use up at most.
-# Similar with 'deb12cis_journald_systemmaxuse', but related to runtime space.
-# Specify values in bytes or use K, M, G, T, P, E as units for the specified size.
-deb12cis_journald_runtimemaxuse: 10M
-# This variable configures the actual amount of disk space to keep free
-# Similar with 'deb12cis_journald_systemkeepfree', but related to runtime space.
-# Specify values in bytes or use K, M, G, T, P, E as units for the specified size.
-deb12cis_journald_runtimekeepfree: 100G
-# Current variable governs the settings for log retention(how long the log files will be kept).
-# Thus, it specifies the maximum time to store entries in a single journal
-# file before rotating to the next one. Set to 0 to turn off this feature.
-# The given values is interpreted as seconds, unless suffixed with the units
-# `year`, `month`, `week`, `day`, `h` or `m` to override the default time unit of seconds.
-# Values are Xm, Xh, Xday, Xweek, Xmonth, Xyear, for example 2week is two weeks
-deb12cis_journald_maxfilesec: 1month
-
-##  Control 6.4.2.1 - Ensure audit_backlog_limit is sufficient
-# This variable represents the audit backlog limit, i.e., the maximum number of audit records that the
-# system can buffer in memory, if the audit subsystem is unable to process them in real-time.
-# Buffering in memory is useful in situations, where the audit system is overwhelmed
-# with incoming audit events, and needs to temporarily store them until they can be processed.
-# This variable should be set to a sufficient value. The CIS baseline recommends at least `8192` as value.
-deb12cis_audit_back_log_limit: 8192
-
-## Controls 6.4.2.x - What to do when log files fill up
-## Control 6.4.2.1 - Ensure audit log storage size is configured
-# This variable specifies the maximum size in MB that an audit log file can reach
-# before it is archived or deleted to make space for the new audit data.
-# This should be set based on your sites policy. CIS does not provide a specific value.
-deb12cis_auditd_max_log_file_size: 10
-
-## Control 6.4.2.2
-# This variable determines what action the audit system should take when the maximum
-# size of a log file is reached.
-# The options for setting this variable are as follows:
-# - `ignore`: the system does nothing when the size of a log file is full;
-# - `syslog`: a message is sent to the system log indicating the problem;
-# - `suspend`: the system suspends recording audit events until the log file is cleared or rotated;
-# - `rotate`: the log file is rotated (archived) and a new empty log file is created;
-# - `keep_logs`: the system attempts to keep as many logs as possible without violating disk space constraints.
-# CIS prescribes the value `keep_logs`.
-deb12cis_auditd_max_log_file_action: keep_logs
-
-## Control 6.4.2.3
-# This variable determines how the system should act in case of issues with the disk.
-# The disk_full_action parameter tells the system what action to take when no free space is
-# available on the partition that holds the audit log files.
-# Valid values are ignore, syslog, rotate, exec, suspend, single, and halt.
-# CIS prescribes
-# disk_full_action parameter:
-# Set to halt - the auditd daemon will shutdown the system when the disk partition containing
-# the audit logs becomes full.
-# Set to single - the auditd daemon will put the computer system in single user mode when the
-# disk partition containing the audit logs becomes full.
-deb12cis_auditd_disk_full_action: halt
-# This variable determines how the system should act in case of issues with the disk.
-# The disk_error_action parameter tells the system what action to take when an error is detected
-# on the partition that holds the audit log files.
-# Valid values are ignore, syslog, exec, suspend, single, and halt.
-# disk_error_action parameter:
-# Set to halt - the auditd daemon will shutdown the system when an error is detected on the
-# partition that holds the audit log files.
-# Set to single - the auditd daemon will put the computer system in single user mode when
-# an error is detected on the partition that holds the audit log files.
-# Set to syslog - the auditd daemon will issue no more than 5 consecutive warnings to syslog
-# when an error is detected on the partition that holds the audit log files.
-deb12cis_auditd_disk_error_action: syslog
-
-# Control 6.4.2.4
-# This variable tells the system what action to take when the system has detected
-# that it is starting to get low on disk space.
-# The options for setting this variable are as follows:
-# "ignore"  - the system does nothing when presented with the aforementioned issue;
-# "syslog" - a message is sent to the system log about disk space running low;
-# "email"  - the system sends an email notification to the email address
-#            specified in the "action_mail_acct" variable;
-# "exec"   - the system executes a custom command when disk space is running
-#            low;
-# "suspend" - the system suspends recording audit events until more space is available;
-# "single"  - the audit daemon will put the computer system in single user mode;
-# "halt"    - the system is halted when disk space is critically low;
-# CIS prescribes either 'email', 'exec', `single` or `halt`.
-deb12cis_auditd_space_left_action: email
-# This variable tells the system what action to take when the system has detected
-# that it is low on disk space.
-# The options for setting this variable are as follows:
-# "ignore"  - the system does nothing when presented with the aforementioned issue;
-# "syslog"  - a message is sent to the system log about disk space running low;
-# "email"  - the system sends an email notification to the email address
-#            specified in the "action_mail_acct" variable;
-# "exec"   - the system executes a custom command when disk space is running
-#            low;
-# "suspend" - the system suspends recording audit events until more space is available;
-# "single"  - the audit daemon will put the computer system in single user mode;
-# "halt"    - the system is halted when disk space is critically low;
-# CIS prescribes either `halt` or `single`.
-deb12cis_auditd_admin_space_left_action: halt
-# This variable governs if the configuration for space_left_action and admin_space_left action
-# should be implemented.
-deb12cis_auditd_extra_conf_usage: false
-
-# 6.3.3.x allow exceptions for UID in auditd config
 # This variable is used to condition the execution of a POST task
 # from the "auditd.yml" file. That task implements an advanced option,
 # and it only gets executed if this variable's value is set to 'true'.
