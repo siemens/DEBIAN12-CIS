@@ -696,7 +696,7 @@ deb12cis_xinetd_mask: false
 # Set this variable to `true` to keep service `xwindow`; otherwise, the service is uninstalled.
 deb12cis_xwindow_server: false  # will remove mask not an option
 
-## Control 2.1.21 - Ensure mail transfer agents are configured for local-only mode
+## Control 2.1.21 - Ensure mail transfer agent is configured for local-only mode
 # This variable if set to 'false', ensures that the mail transfer agent is configured for
 # local-only mode.
 deb12cis_is_mail_server: false
@@ -966,7 +966,7 @@ deb12cis_sudo_package: "sudo"
 # log file.
 deb12cis_sudolog_location: "/var/log/sudo.log"
 
-## Control 5.2.4 - Ensure users must provide password for escalation
+## Control 5.2.4 - Ensure users must provide password for privilege escalation
 # The following variable specifies a list of users that should not be required to provide a password
 # for escalation. Feel free to edit it according to your needs.
 deb12cis_sudoers_exclude_nopasswd_list:

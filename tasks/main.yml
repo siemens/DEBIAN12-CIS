@@ -93,7 +93,7 @@
             fail_msg: "You have {{ sudo_password_rule }} enabled but the user = {{ ansible_env.SUDO_USER }} is locked - It can break access"
             success_msg: "The local account is not locked for {{ ansible_env.SUDO_USER }} user"
 
-- name: "Ensure root password is set"
+- name: "Ensure root account access is controlled"
   when:
     - deb12cis_rule_5_4_2_4
   tags:
@@ -104,12 +104,12 @@
     - root
     - rule_5.4.2.4
   block:
-    - name: "Ensure root password is set"
+    - name: "Ensure root account access is controlled"
       ansible.builtin.shell: passwd -S root | grep 'root P'
       changed_when: false
       register: prelim_check_root_passwd_set
 
-    - name: "Ensure root password is set"
+    - name: "Ensure root account access is controlled"
       ansible.builtin.assert:
         that: prelim_check_root_passwd_set.rc == 0
         fail_msg: "You have rule 5.4.2.4 enabled this requires that you have a root password set"
