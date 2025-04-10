@@ -73,7 +73,7 @@
     - NIST800-53R5_IA-5
   notify: Update dconf
   block:
-    - name: "1.7.3 | PATCH | Ensure Ensure GDM disable-user-list option is enabled | make directories"
+    - name: "1.7.3 | PATCH | Ensure GDM disable-user-list option is enabled | make directories"
       ansible.builtin.file:
         path: "{{ item }}"
         owner: root
@@ -320,7 +320,7 @@
         mode: 'u-x,go-wx'
       notify: Update dconf
 
-- name: "1.7.10 | PATCH | Ensure XDMPC is not enabled"
+- name: "1.7.10 | PATCH | Ensure XDMCP is not enabled"
   when:
     - deb12cis_rule_1_7_10
   tags:
