@@ -100,9 +100,11 @@
     - level1-server
     - level1-workstation
     - patch
+    - shadow_suite
     - accounts
     - root
     - rule_5.4.2.4
+    - NIST800-53R5_NA
   block:
     - name: "Ensure root account access is controlled"
       ansible.builtin.shell: passwd -S root | grep 'root P'

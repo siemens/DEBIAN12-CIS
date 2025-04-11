@@ -101,6 +101,8 @@
     - level1-workstation
     - patch
     - shadow_suite
+    - accounts
+    - root
     - rule_5.4.2.4
     - NIST800-53R5_NA
   ansible.builtin.debug:
