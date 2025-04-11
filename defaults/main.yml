@@ -1,14 +1,23 @@
 ---
-# defaults file for deb12-cis
-# WARNING:
-# These values may be overridden by other vars-setting options(e.g. like the below 'container_vars_file'), as explained here:
-# https://docs.ansible.com/ansible/latest/playbook_guide/playbooks_variables.html#variable-precedence-where-should-i-put-a-variable
+###
+### defaults file for deb12-cis
+### WARNING:
+### These values may be overridden by other vars-setting options(e.g. like the below 'container_vars_file'), as explained here:
+### https://docs.ansible.com/ansible/latest/playbook_guide/playbooks_variables.html#variable-precedence-where-should-i-put-a-variable
+###
+
+#################################################
 
 # This variable is used for running the OS validation check.
 # Supported OSs will not need for this to be changed - see README e.g. CentOS
 os_check: true
 
-## Possibly disruptive tasks
+###
+### Possibly disruptive tasks
+###
+
+#################################################
+
 # This variable governs whether tasks of a potentially disruptive nature on your system
 # (e.g., removing .forward and .netrc files for interactive users) are carried out.
 # If you set this variable to 'true', the role will carry such tasks; if you set it to
@@ -54,13 +63,17 @@ change_requires_reboot: false
 ###
 
 ###########################################
-### Goss is required on the remote host ###
-## Refer to vars/auditd.yml for any other settings ##
 
+###
+### Goss is required on the remote host ###
+### Refer to vars/auditd.yml for any other settings ##
+###
+
+###########################################
 # Allow audit to setup the requirements including installing git (if option chosen and downloading and adding goss binary to system)
 setup_audit: false
 
-# enable audits to run - this runs the audit and get the latest content
+# Enable audits to run - this runs the audit and gets the latest content
 run_audit: false
 
 ## Only run Audit do not remediate
@@ -504,9 +517,9 @@ deb12cis_rule_7_2_10: true
 ##
 
 ## Control 1.1.1.9 - Ensure udf kernel module is not available
-# We have found that some systems may have UAS kernel running and if it is,
-# usb-storage will fail to be removed which is control 1.1.1.8. By default, this
-# is set to false. By having this set to false control 1.1.1.8 will run but if UAS
+# We have found that some systems may have UAS kernel running and if that is the case,
+# usb-storage will fail to be removed which is control 1.1.1.9. By default, this
+# is set to false. By having this set to false control 1.1.1.9 will run but if UAS
 # is loaded you will receive a warning message instead of usb-storage being removed
 # and the playbook will have to be re-run with this switch set to true.
 # Default: false
@@ -565,7 +578,12 @@ deb12cis_grub_user_file: /etc/grub.d/00_user
 # the recovery console, which would be otherwise unprotected. This must be `root`.
 deb12cis_grub_user: root
 
-## Unrestricted boot
+###
+### Unrestricted boot
+###
+
+###########################################
+
 # Setting this variable to 'false' enables the system to
 # boot *without* querying for the bootloader password.
 deb12cis_ask_passwd_to_boot: false
@@ -603,12 +621,18 @@ deb12cis_screensaver_lock_delay: 5
 ## Section 2 Control Variables
 ##
 
+###
+### The set of rules that make up section 2.1, are used for ensuring that
+### certain services are not installed on the OS.
+### The following list of variables contain two types: the ones that end in '_services', and the ones that end in '_mask'
+### in '_mask'. For completely removing a service both those variables referencing that service shall be set to 'false'.
+### For masking a service the type that ends in '_mask' shall be set to 'true'.
+### Set this variable to `true` to keep service `autofs`; otherwise, the service is uninstalled.
+###
+
+###########################################
+
 ## Controls 2.1.x - Configure Server Services
-# The set of rules that make up section 2.1, are used for ensuring that
-# certain services are not installed on the OS.
-# The following list of variables contain two types: the ones that end in '_services', and the ones that end in '_mask'
-# in '_mask'. For completely removing a service both those variables referencing that service shall be set to 'false'.
-# For masking a service the type that ends in '_mask' shall be set to 'true'.
 # Set this variable to `true` to keep service `autofs`; otherwise, the service is uninstalled.
 deb12cis_autofs_services: false
 # Set this variable to `true` to mask service `autofs`.
@@ -642,7 +666,7 @@ deb12cis_ldap_server: false
 # Set this variable to `true` to mask service `ldap`.
 deb12cis_ldap_mask: false
 # Set this variable to `true` to keep service `message`; otherwise, the service is uninstalled.
-deb12cis_message_server: false  # This is for messaging dovecot and cyrus-imap
+deb12cis_message_server: false
 # Set this variable to `true` to mask service `message`.
 deb12cis_message_mask: false
 # Set this variable to `true` to keep service `nfs`; otherwise, the service is uninstalled.
@@ -650,11 +674,11 @@ deb12cis_nfs_server: true
 # Set this variable to `true` to mask service `nfs`.
 deb12cis_nfs_mask: true
 # Set this variable to `true` to keep service `nis`; otherwise, the service is uninstalled.
-deb12cis_nis_server: true  # set to mask if nis client required
+deb12cis_nis_server: true
 # Set this variable to `true` to mask service `nis`.
 deb12cis_nis_mask: false
 # Set this variable to `true` to keep service `print`; otherwise, the service is uninstalled.
-deb12cis_print_server: false  # replaces cups
+deb12cis_print_server: false
 # Set this variable to `true` to mask service `print`.
 deb12cis_print_mask: false
 # Set this variable to `true` to keep service `rpc`; otherwise, the service is uninstalled.
@@ -740,7 +764,12 @@ deb12cis_time_servers:
   - name: time-c-g.nist.gov
     options: iburst
 
-## Purge apt packages
+###
+### Purge apt packages
+###
+
+###########################################
+
 # This will allow the purging of any packages that are marked to be removed
 # This will also purge any packages not removed via this playbook
 deb12cis_purge_apt: false
@@ -769,14 +798,19 @@ deb12cis_bluetooth_mask: false
 # are skipped.
 deb12cis_is_router: false
 
-## Sysctl
-# Sysctl is a command-line utility on Unix-like OSs that allows
-# administrators and users to query and modify kernel parameters
-# at run time. It is commonly used for performance optimization,
-# security hardening, etc.
-# Updating sysctl after modifications is necessary to make the
-# changes persistent and ensure they are applied each time the
-# system restarts!
+###
+### Sysctl
+### Sysctl is a command-line utility on Unix-like OSs that allows
+### administrators and users to query and modify kernel parameters
+### at run time. It is commonly used for performance optimization,
+### security hardening, etc.
+### Updating sysctl after modifications is necessary to make the
+### changes persistent and ensure they are applied each time the
+### system restarts!
+###
+
+###########################################
+
 # This variable's value controls the execution of a Post task
 # responsible for updating sysctl. The default value is 'false',
 # but throughout the role, some tasks need sysctl to get
@@ -894,7 +928,12 @@ deb12cis_sshd_default_kex_algorithms:
   - diffie-hellman-group18-sha512
   - diffie-hellman-group14-sha256
 
-# SSHD settings
+###
+### SSHD settings
+###
+
+###########################################
+
 # This variable is used to control the verbosity of the logging produced by the SSH server.
 # The options for setting it are as follows:
 # - `QUIET`: Minimal logging;
@@ -936,7 +975,7 @@ deb12cis_sshd_max_sessions: "{{ deb12cis_sshd_default_max_sessions }}"
 # The allow/deny directives process order: DenyUsers, AllowUsers, DenyGroups, AllowGroups.
 # For more info, see https://linux.die.net/man/5/sshd_config
 deb12cis_sshd_allow_users: ""
-# (String) This variable, if specified, configures a list of GROUP name patterns, separated by spaces, to allow SSH access
+# This variable, if specified, configures a list of GROUP name patterns, separated by spaces, to allow SSH access
 # for users whose primary group or supplementary group list matches one of the patterns. This is done
 # by setting the value of `AllowGroups` option in `/etc/ssh/sshd_config` file.
 # The allow/deny directives process order: DenyUsers, AllowUsers, DenyGroups, AllowGroups.
@@ -981,7 +1020,6 @@ deb12cis_sudo_timestamp_timeout: 15
 
 ## Control 5.2.7 - Ensure access to the su command is restricted
 # This variable determines the group of users that are allowed to use the su command.
-# one to specify a user group that is allowed to use the "su" command.
 # CIS requires that such a group be created (named according to site policy) and be kept empty.
 deb12cis_sugroup: nosugroup
 
@@ -1213,7 +1251,7 @@ deb12cis_pass_warn_age: 7
 deb12cis_force_user_warnage: false
 
 ## Control 5.4.1.4 - Ensure strong password hashing algorithm is configured
-# deb12cis_passwd_hash_algo is the hashing algorithm used
+# The following variable's value represents the hashing algorithm used
 deb12cis_passwd_hash_algo: yescrypt  # pragma: allowlist secret
 
 ## Control 5.4.1.5 - Ensure inactive password lock is configured
@@ -1227,7 +1265,7 @@ deb12cis_inactivelock_lock_days: 45
 # 'true' will expire those users' passwords.
 deb12cis_futurepwchgdate_autofix: true
 
-# Control 5.4.2.6 - Ensure root user umask is configured
+## Control 5.4.2.6 - Ensure root user umask is configured
 # The following variable specifies the "umask" to configure for the root user.
 # The user file-creation mode mask ( umask ) is used to determine the file
 # permission for newly created directories and files. In Linux, the default
@@ -1262,7 +1300,7 @@ deb12cis_bash_umask: '027'
 ##
 
 ## Control 6.1.1.3 Ensure journald log file rotation is configured
-# These variable specifies how much disk space the journal may use up at most
+# This variable specifies how much disk space the journal may use up at most
 # Specify values in bytes or use K, M, G, T, P, E as units for the specified sizes.
 # See https://www.freedesktop.org/software/systemd/man/journald.conf.html for more information.
 deb12cis_journald_systemmaxuse: 10M
@@ -1293,13 +1331,18 @@ deb12cis_journald_maxfilesec: 1month
 deb12cis_syslog: journald
 
 ## Control  6.1.2.1.2 - Ensure systemd-journal-upload authentication is configured
-# 'deb12cis_journal_upload_url' is the ip address to upload the journal entries to
+# The following variable's value represents the ip address to upload the journal entries to
 #  URL value may specify either just the hostname or both the protocol and hostname. 'https' is the default. The port
 #  number may be specified after a colon (":"), otherwise 19532 will be used by default.
 deb12cis_journal_upload_url: 192.168.50.42
 
+###
+### The paths below have the default paths/files, but allow user to create custom paths/filenames
+###
+
+###########################################
+
 ## Control 6.1.2.1.2 - Ensure systemd-journal-upload authentication is configured
-## The paths below have the default paths/files, but allow user to create custom paths/filenames
 # This variable specifies the path to the private key file used by the remote journal
 # server to authenticate itself to the client. This key is used alongside the server's
 # public certificate to establish secure communication.
@@ -1371,7 +1414,7 @@ deb12cis_auditd_disk_full_action: halt
 # when an error is detected on the partition that holds the audit log files.
 deb12cis_auditd_disk_error_action: syslog
 
-# Control 6.2.2.4 - Ensure system warns when audit logs are low on space
+## Control 6.2.2.4 - Ensure system warns when audit logs are low on space
 # This variable tells the system what action to take when the system has detected
 # that it is starting to get low on disk space.
 # The options for setting this variable are as follows:
@@ -1524,7 +1567,7 @@ deb12cis_auditd_extra_conf:
 deb12cis_no_world_write_adjust: true
 
 ## Control 7.1.12 - Ensure no files or directories without an owner and a group exist
-# This variable hold the part of the command that helps detect which files and
+# This variable holds the part of the command that helps detect which files and
 # directories do not have an owner and an affiliated group.
 deb12cis_exclude_unowned_search_path: '\( ! -path "/run/user/*" -a ! -path "/proc/*" -a ! -path "*/containerd/*" -a ! -path "*/kubelet/pods/*" -a ! -path "*/kubelet/plugins/*" -a ! -path "/sys/fs/cgroup/memory/*" -a ! -path "/var/*/private/*" \)'
 # The value of this variable specifies the owner that will be set for unowned files and directories.
