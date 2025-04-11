@@ -284,7 +284,7 @@
   vars:
     warn_control_id: '1.1.1.9'
   block:
-    - name: "PATCH | Ensure usb-storage kernel module is not available | UAS is not running"
+    - name: "1.1.1.9 | PATCH | Ensure usb-storage kernel module is not available | UAS is not running"
       when: discovered_uas_status.rc != 0
       block:
         - name: "1.1.1.9 | PATCH | Ensure usb-storage kernel module is not available | Edit modprobe config"
