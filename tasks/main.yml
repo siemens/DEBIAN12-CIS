@@ -46,7 +46,7 @@
     - deb12cis_set_boot_pass
     - deb12cis_rule_1_4_1
   tags:
-    - always
+    - rule_1.4.1
   ansible.builtin.assert:
     that: deb12cis_bootloader_password_hash.find('grub.pbkdf2.sha512') != -1 and deb12cis_bootloader_password_hash != 'grub.pbkdf2.sha512.changethispassword'  # pragma: allowlist secret
     msg: "This role will not be able to run single user password commands as deb12cis_bootloader_password_hash variable has not been set correctly"
@@ -89,9 +89,12 @@
         - name: "Check account is not locked for {{ ansible_env.SUDO_USER }} | Assert local account not locked"  # noqa name[template]
           ansible.builtin.assert:
             that:
-              - not prelim_ansible_user_password_set.stdout.startswith("!")
+              - |
+                  (not prelim_ansible_user_password_set.stdout.startswith("!"))
+                  or
+                  (ansible_env.SUDO_USER in deb12cis_sudoers_exclude_nopasswd_list)
             fail_msg: "You have {{ sudo_password_rule }} enabled but the user = {{ ansible_env.SUDO_USER }} is locked - It can break access"
-            success_msg: "The local account is not locked for {{ ansible_env.SUDO_USER }} user"
+            success_msg: "The local account {{ ansible_env.SUDO_USER }} is not locked for or included in the exception list for rule 5.4.2.4"
 
 - name: "Ensure root account access is controlled"
   when:
@@ -107,15 +110,15 @@
     - NIST800-53R5_NA
   block:
     - name: "Ensure root account access is controlled"
-      ansible.builtin.shell: passwd -S root | grep 'root P'
+      ansible.builtin.shell: passwd -S root | grep 'root [PL]'
       changed_when: false
       register: prelim_check_root_passwd_set
 
     - name: "Ensure root account access is controlled"
       ansible.builtin.assert:
         that: prelim_check_root_passwd_set.rc == 0
-        fail_msg: "You have rule 5.4.2.4 enabled this requires that you have a root password set"
-        success_msg: "You have a root password set"
+        fail_msg: "You have rule 5.4.2.4 enabled this requires that you have a root password set or root is locked"
+        success_msg: "You have a root password set or root is locked."
 
 - name: "Gather the package facts"
   tags:
