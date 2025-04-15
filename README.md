@@ -2,7 +2,7 @@
 
 ## Configure a Debian 12 machine to be [CIS](https://www.cisecurity.org/cis-benchmarks/) compliant
 
-### Based on [ CIS Debian Linux 9 Benchmark v1.0.1 ](https://www.cisecurity.org/cis-benchmarks/)
+### Based on [ CIS Debian Linux 9 Benchmark v1.1.0 ](https://www.cisecurity.org/cis-benchmarks/)
 
 ---
 
